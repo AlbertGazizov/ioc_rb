@@ -7,8 +7,8 @@ class IocRb::DependencyDefinition
     @name = name
     @dependency_class = options[:class]
     @attrs = []
-    if @dependency_class.class_variable_defined?(:@@injectable_attrs)
-      @dependency_class.class_variable_get(:@@injectable_attrs).each do |attr|
+    if @dependency_class.respond_to?(:injectable_attrs)
+      @dependency_class.injectable_attrs.each do |attr|
         @attrs << Attribute.new(attr, ref: attr)
       end
     end

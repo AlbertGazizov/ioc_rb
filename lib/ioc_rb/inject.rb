@@ -16,14 +16,13 @@ class Object
       unless dependency_names.all?{|name| name.is_a?(Symbol) }
         raise ArgumentError, "inject accepts only symbols"
       end
-      if class_variable_defined?(:@@injectable_attrs)
-        injectable_attrs = class_variable_get(:@@injectable_attrs)
-        injectable_attrs |= dependency_names
-        class_variable_set(:@@injectable_attrs, injectable_attrs)
+      if respond_to?(:injectable_attrs)
+        self.injectable_attrs |= dependency_names
       else
-        class_variable_set(:@@injectable_attrs, dependency_names)
+        class_attribute :injectable_attrs
+        self.injectable_attrs = dependency_names
       end
-      attr_accessor *dependency_names
+      class_attribute *dependency_names
     end
 
   end
