@@ -19,7 +19,7 @@ module IocRb
 
       if resources
         ArgsValidator.is_array!(resources, :resources)
-        #parse(resources)
+        load_dependency_definitions(resources)
       end
     end
 
@@ -37,12 +37,23 @@ module IocRb
       end
 
       dependency_definition = @dependency_definitions.by_name(name)
+      unless dependency_definition
+        raise Errors::MissingDependencyError, "Dependency with name :#{name} not found"
+      end
       dependency = dependency_definition.dependency_class.new
       dependency_definition.attrs.each do |attr|
         dependency.send("#{attr.name}=", self[attr.ref])
       end
       @dependencies_storage.put(dependency_definition.name, dependency)
       dependency
+    end
+
+    private
+
+    def load_dependency_definitions(resources)
+      resources.each do |resource|
+        resource.call(self)
+      end
     end
 
 
