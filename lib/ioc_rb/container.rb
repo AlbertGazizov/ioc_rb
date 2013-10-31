@@ -21,6 +21,9 @@ module IocRb
         ArgsValidator.is_array!(resources, :resources)
         load_dependency_definitions(resources)
       end
+      if block_given?
+        yield(self)
+      end
     end
 
     def register(dependency_name, options, &block)

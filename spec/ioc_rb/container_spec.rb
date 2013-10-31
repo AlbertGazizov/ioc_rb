@@ -48,4 +48,26 @@ describe IocRb::Container do
       container[:appender].should be_a(Test::Appender)
     end
   end
+
+  describe "using autowiring with :inject key word" do
+    module Test
+      class ContactBook
+        inject :contacts_repository
+      end
+
+      class ContactsRepository
+      end
+    end
+
+    let(:container) do
+      IocRb::Container.new do |c|
+        c.register(:contacts_repository, class: Test::ContactsRepository)
+        c.register(:contact_book, class: Test::ContactBook)
+      end
+    end
+
+    it "should autowire dependencies" do
+      container[:contact_book].contacts_repository.should be_a(Test::ContactsRepository)
+    end
+  end
 end
