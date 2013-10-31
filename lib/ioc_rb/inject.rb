@@ -19,6 +19,7 @@ class Object
       if class_variable_defined?(:@@injectable_attrs)
         injectable_attrs = class_variable_get(:@@injectable_attrs)
         injectable_attrs |= dependency_names
+        class_variable_set(:@@injectable_attrs, injectable_attrs)
       else
         class_variable_set(:@@injectable_attrs, dependency_names)
       end
