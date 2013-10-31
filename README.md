@@ -29,3 +29,5 @@ TODO: Write usage instructions here
 5. Create new Pull Request
 
 # TODO
+1 fix passing multiple names to inject
+2 implement scopes
