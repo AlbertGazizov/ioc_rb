@@ -53,7 +53,7 @@ describe IocRb::Container do
     module Test
       class ContactBook
         inject :contacts_repository
-        inject :contact_validator
+        inject :validator, ref: :contact_validator
       end
 
       class ContactsRepository
@@ -72,7 +72,7 @@ describe IocRb::Container do
 
     it "should autowire dependencies" do
       container[:contact_book].contacts_repository.should be_a(Test::ContactsRepository)
-      container[:contact_book].contact_validator.should be_a(Test::ContactValidator)
+      container[:contact_book].validator.should be_a(Test::ContactValidator)
     end
   end
 end

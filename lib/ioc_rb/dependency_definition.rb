@@ -8,8 +8,9 @@ class IocRb::DependencyDefinition
     @dependency_class = options[:class]
     @attrs = []
     if @dependency_class.respond_to?(:injectable_attrs)
-      @dependency_class.injectable_attrs.each do |attr|
-        @attrs << Attribute.new(attr, ref: attr)
+      @dependency_class.injectable_attrs.each do |attr, options|
+        options[:ref] ||= attr
+        @attrs << Attribute.new(attr, options)
       end
     end
     if block
