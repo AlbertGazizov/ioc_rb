@@ -12,16 +12,17 @@ class Object
 
   class << self
 
-    def inject(dependency_name)
-      ArgsValidator.is_symbol!(dependency_name, :dependency_name)
-      if defined?(@@injectable_attrs)
-        injectable_attrs = class_variable_get(:@@injectable_attrs)
-        injectable_attrs << dependency_name
-        class_variable_set(:@@injectable_attrs, injectable_attrs)
-      else
-        class_variable_set(:@@injectable_attrs, [dependency_name])
+    def inject(*dependency_names)
+      unless dependency_names.all?{|name| name.is_a?(Symbol) }
+        raise ArgumentError, "inject accepts only symbols"
       end
-      attr_accessor dependency_name
+      if class_variable_defined?(:@@injectable_attrs)
+        injectable_attrs = class_variable_get(:@@injectable_attrs)
+        injectable_attrs |= dependency_names
+      else
+        class_variable_set(:@@injectable_attrs, dependency_names)
+      end
+      attr_accessor *dependency_names
     end
 
   end
