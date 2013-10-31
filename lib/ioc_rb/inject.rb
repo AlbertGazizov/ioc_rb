@@ -26,10 +26,11 @@ class Object
           result
         end
       else
-        self.injectable_attrs.merge!(dependency_names.inject({}) do |result, name|
+        new_attrs = dependency_names.inject({}) do |result, name|
           result[name] = options
           result
-        end)
+        end
+        self.injectable_attrs = self.injectable_attrs.merge(new_attrs)
       end
       class_attribute *dependency_names
     end

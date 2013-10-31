@@ -75,4 +75,42 @@ describe IocRb::Container do
       container[:contact_book].validator.should be_a(Test::ContactValidator)
     end
   end
+
+  describe "inheritance" do
+    module Test
+      class Form
+        inject :validator
+      end
+
+      class Circle < Form
+        inject :circle_validator
+      end
+      class Rectangle < Form
+        inject :rectangle_validator
+      end
+
+      class Validator
+      end
+      class CircleValidator
+      end
+      class RectangleValidator
+      end
+    end
+
+    let(:container) do
+      IocRb::Container.new do |c|
+        c.register(:circle,              class: Test::Circle)
+        c.register(:rectangle,           class: Test::Rectangle)
+        c.register(:validator,           class: Test::Validator)
+        c.register(:circle_validator,    class: Test::CircleValidator)
+        c.register(:rectangle_validator, class: Test::RectangleValidator)
+      end
+    end
+
+    it "dependencies in subclasses shouldn't affect on each other" do
+      container[:circle].circle_validator.should       be_a(Test::CircleValidator)
+      container[:rectangle].rectangle_validator.should be_a(Test::RectangleValidator)
+    end
+
+  end
 end
