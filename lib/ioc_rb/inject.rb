@@ -1,4 +1,4 @@
-# Extend object with the dependency injection mechanism
+# Extend object with the bean injection mechanism
 # Example of usage:
 # class Bar
 # end
@@ -14,25 +14,25 @@ class Object
 
     def inject(*args)
       options = args.last.is_a?(Hash) ? options = args.delete_at(-1) : {}
-      dependency_names = args
+      bean_names = args
 
-      unless dependency_names.all?{|name| name.is_a?(Symbol) }
+      unless bean_names.all?{|name| name.is_a?(Symbol) }
         raise ArgumentError, "inject accepts only symbols"
       end
       unless respond_to?(:injectable_attrs)
         class_attribute :injectable_attrs
-        self.injectable_attrs = dependency_names.inject({}) do |result, name|
+        self.injectable_attrs = bean_names.inject({}) do |result, name|
           result[name] = options.dup
           result
         end
       else
-        new_attrs = dependency_names.inject({}) do |result, name|
+        new_attrs = bean_names.inject({}) do |result, name|
           result[name] = options
           result
         end
         self.injectable_attrs = self.injectable_attrs.merge(new_attrs)
       end
-      class_attribute *dependency_names
+      class_attribute *bean_names
     end
 
     private

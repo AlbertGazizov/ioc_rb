@@ -1,18 +1,20 @@
-class IocRb::DependencyDefinition
-  attr_reader :name, :dependency_class, :attrs
+class IocRb::BeanDefinition
+  attr_reader :name, :bean_class, :attrs
 
   def initialize(name, options, &block)
     ArgsValidator.has_key!(options, :class)
 
-    @name = name
-    @dependency_class = options[:class]
-    @attrs = []
-    if @dependency_class.respond_to?(:injectable_attrs)
-      @dependency_class.injectable_attrs.each do |attr, options|
+    @name       = name
+    @bean_class = options[:class]
+    @attrs      = []
+
+    if @bean_class.respond_to?(:injectable_attrs)
+      @bean_class.injectable_attrs.each do |attr, options|
         options[:ref] ||= attr
         @attrs << Attribute.new(attr, options)
       end
     end
+
     if block
       Dsl.new(@attrs).instance_exec(&block)
     end

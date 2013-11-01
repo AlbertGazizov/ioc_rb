@@ -1,64 +1,61 @@
 require 'ioc_rb/errors'
 require 'ioc_rb/args_validator'
-require 'ioc_rb/dependencies_storage'
-require 'ioc_rb/dependency_definition'
-require 'ioc_rb/dependency_definitions'
+require 'ioc_rb/beans_storage'
+require 'ioc_rb/bean_definition'
+require 'ioc_rb/bean_definitions'
 
 module IocRb
 
-  # IocRb::Container is the central data store for registering services
-  # used for dependency injection. Users register services by
-  # providing a name and a block used to create the service. Services
+  # IocRb::Container is the central data store for registering objects
+  # used for dependency injection. Users register classes by
+  # providing a name and a class to create the object(we call them beans). Beans
   # may be retrieved by asking for them by name (via the [] operator)
-  # or by selector (via the method_missing technique).
-  #
   class Container
     def initialize(resources = nil)
-      @dependencies_storage   = DependenciesStorage.new
-      @dependency_definitions = DependencyDefinitions.new
+      @beans_storage    = BeansStorage.new
+      @bean_definitions = BeanDefinitions.new
 
       if resources
         ArgsValidator.is_array!(resources, :resources)
-        load_dependency_definitions(resources)
+        load_bean_definitions(resources)
       end
       if block_given?
         yield(self)
       end
     end
 
-    def register(dependency_name, options, &block)
-      ArgsValidator.is_symbol!(dependency_name, :dependency_name)
+    def bean(bean_name, options, &block)
+      ArgsValidator.is_symbol!(bean_name, :bean_name)
       ArgsValidator.is_hash!(options, :options)
 
-      dependency = DependencyDefinition.new(dependency_name, options, &block)
-      @dependency_definitions.put(dependency)
+      bean = BeanDefinition.new(bean_name, options, &block)
+      @bean_definitions.put(bean)
     end
 
     def [](name)
-      if dependency = @dependencies_storage.by_name(name)
-        return dependency
+      if bean = @beans_storage.by_name(name)
+        return bean
       end
 
-      dependency_definition = @dependency_definitions.by_name(name)
-      unless dependency_definition
-        raise Errors::MissingDependencyError, "Dependency with name :#{name} not found"
+      bean_definition = @bean_definitions.by_name(name)
+      unless bean_definition
+        raise Errors::MissingBeanError, "Bean with name :#{name} not found"
       end
-      dependency = dependency_definition.dependency_class.new
-      dependency_definition.attrs.each do |attr|
-        dependency.send("#{attr.name}=", self[attr.ref])
+      bean = bean_definition.bean_class.new
+      bean_definition.attrs.each do |attr|
+        bean.send("#{attr.name}=", self[attr.ref])
       end
-      @dependencies_storage.put(dependency_definition.name, dependency)
-      dependency
+      @beans_storage.put(bean_definition.name, bean)
+      bean
     end
 
     private
 
-    def load_dependency_definitions(resources)
+    def load_bean_definitions(resources)
       resources.each do |resource|
         resource.call(self)
       end
     end
-
 
   end
 end

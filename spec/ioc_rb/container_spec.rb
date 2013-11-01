@@ -12,16 +12,16 @@ describe IocRb::Container do
     end
   end
 
-  describe "#register" do
+  describe "bean definitions" do
     let(:container) do
       container = IocRb::Container.new
-      container.register(:appender, class: Test::Appender)
-      container.register(:logger, class: Test::Logger) do
+      container.bean(:appender, class: Test::Appender)
+      container.bean(:logger, class: Test::Logger) do
         attr :appender, ref: :appender
       end
       container
     end
-    it "should register dependency" do
+    it "should bean dependency" do
       container[:logger].should be_a(Test::Logger)
       container[:logger].appender.should be_a(Test::Appender)
     end
@@ -35,8 +35,8 @@ describe IocRb::Container do
   describe "passing dependencies definitions to container constructor" do
     let(:resource) do
       Proc.new do |c|
-        c.register(:appender, class: Test::Appender)
-        c.register(:logger, class: Test::Logger) do
+        c.bean(:appender, class: Test::Appender)
+        c.bean(:logger, class: Test::Logger) do
           attr :appender, ref: :appender
         end
       end
@@ -64,9 +64,9 @@ describe IocRb::Container do
 
     let(:container) do
       IocRb::Container.new do |c|
-        c.register(:contacts_repository, class: Test::ContactsRepository)
-        c.register(:contact_validator, class: Test::ContactValidator)
-        c.register(:contact_book, class: Test::ContactBook)
+        c.bean(:contacts_repository, class: Test::ContactsRepository)
+        c.bean(:contact_validator, class: Test::ContactValidator)
+        c.bean(:contact_book, class: Test::ContactBook)
       end
     end
 
@@ -99,11 +99,11 @@ describe IocRb::Container do
 
     let(:container) do
       IocRb::Container.new do |c|
-        c.register(:circle,              class: Test::Circle)
-        c.register(:rectangle,           class: Test::Rectangle)
-        c.register(:validator,           class: Test::Validator)
-        c.register(:circle_validator,    class: Test::CircleValidator)
-        c.register(:rectangle_validator, class: Test::RectangleValidator)
+        c.bean(:circle,              class: Test::Circle)
+        c.bean(:rectangle,           class: Test::Rectangle)
+        c.bean(:validator,           class: Test::Validator)
+        c.bean(:circle_validator,    class: Test::CircleValidator)
+        c.bean(:rectangle_validator, class: Test::RectangleValidator)
       end
     end
 
