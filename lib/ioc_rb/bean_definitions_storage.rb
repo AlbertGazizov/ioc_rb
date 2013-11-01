@@ -1,5 +1,5 @@
 module IocRb
-  class BeanDefinitions
+  class BeanDefinitionsStorage
     def initialize
       @bean_definitions = {}
     end

@@ -2,7 +2,7 @@ require 'ioc_rb/errors'
 require 'ioc_rb/args_validator'
 require 'ioc_rb/beans_storage'
 require 'ioc_rb/bean_definition'
-require 'ioc_rb/bean_definitions'
+require 'ioc_rb/bean_definitions_storage'
 
 module IocRb
 
@@ -11,16 +11,17 @@ module IocRb
   # providing a name and a class to create the object(we call them beans). Beans
   # may be retrieved by asking for them by name (via the [] operator)
   class Container
-    def initialize(resources = nil)
-      @beans_storage    = BeansStorage.new
-      @bean_definitions = BeanDefinitions.new
+
+    def initialize(resources = nil, &block)
+      @beans_storage            = BeansStorage.new
+      @bean_definitions_storage = BeanDefinitionsStorage.new
 
       if resources
         ArgsValidator.is_array!(resources, :resources)
         load_bean_definitions(resources)
       end
       if block_given?
-        yield(self)
+        load_bean_definitions([block])
       end
     end
 
@@ -29,7 +30,7 @@ module IocRb
       ArgsValidator.is_hash!(options, :options)
 
       bean = BeanDefinition.new(bean_name, options, &block)
-      @bean_definitions.put(bean)
+      @bean_definitions_storage.put(bean)
     end
 
     def [](name)
@@ -37,7 +38,7 @@ module IocRb
         return bean
       end
 
-      bean_definition = @bean_definitions.by_name(name)
+      bean_definition = @bean_definitions_storage.by_name(name)
       unless bean_definition
         raise Errors::MissingBeanError, "Bean with name :#{name} not found"
       end
