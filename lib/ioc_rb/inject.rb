@@ -35,12 +35,6 @@ class Object
       class_attribute *bean_names
     end
 
-    private
-
-    def extract_options!(args)
-      args
-    end
-
   end
 
 end
