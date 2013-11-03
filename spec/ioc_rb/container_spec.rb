@@ -21,18 +21,18 @@ describe IocRb::Container do
       end
       container
     end
-    it "should bean dependency" do
+    it "should instanciate bean and it's dependencies" do
       container[:logger].should be_a(Test::Logger)
       container[:logger].appender.should be_a(Test::Appender)
     end
 
-    it "should return the same instance on each call" do
+    it "container should return the same instance on each call" do
       logger = container[:logger]
       container[:logger].should == logger
     end
   end
 
-  describe "passing dependencies definitions to container constructor" do
+  describe "passing bean definitions to container constructor" do
     let(:resource) do
       Proc.new do |c|
         c.bean(:appender, class: Test::Appender)
@@ -42,14 +42,14 @@ describe IocRb::Container do
       end
     end
 
-    it "should parse external dependency definitions" do
+    it "should instanciate given bean definitions" do
       container = IocRb::Container.new([resource])
       container[:logger].should be_a(Test::Logger)
       container[:appender].should be_a(Test::Appender)
     end
   end
 
-  describe "using autowiring with :inject key word" do
+  describe "autowiring using :inject keyword" do
     module Test
       class ContactBook
         inject :contacts_repository
@@ -111,6 +111,25 @@ describe IocRb::Container do
       container[:circle].circle_validator.should       be_a(Test::CircleValidator)
       container[:rectangle].rectangle_validator.should be_a(Test::RectangleValidator)
     end
+  end
 
+  describe "bean scopes" do
+    module Test
+      class ContactsService
+        inject :contacts_repository
+      end
+      class ContactsRepository
+      end
+    end
+    let(:container) do
+      container = IocRb::Container.new
+      container.bean(:contacts_repository, class: Test::ContactsRepository, scope: :request)
+      container.bean(:contacts_service,    class: Test::ContactsService, scope: :singleton)
+      container
+    end
+
+    it "should instanciate bean with :request scope on each request" do
+      container[:contacts_service]
+    end
   end
 end
