@@ -17,7 +17,7 @@ module IocRb
       @bean_definitions_storage = BeanDefinitionsStorage.new
 
       if resources
-        ArgsValidator.is_array!(resources, :resources)
+        IocRb::ArgsValidator.is_array!(resources, :resources)
         load_bean_definitions(resources)
       end
       if block_given?
@@ -26,8 +26,8 @@ module IocRb
     end
 
     def bean(bean_name, options, &block)
-      ArgsValidator.is_symbol!(bean_name, :bean_name)
-      ArgsValidator.is_hash!(options, :options)
+      IocRb::ArgsValidator.is_symbol!(bean_name, :bean_name)
+      IocRb::ArgsValidator.is_hash!(options, :options)
 
       bean = BeanDefinition.new(bean_name, options, &block)
       @bean_definitions_storage.put(bean)
