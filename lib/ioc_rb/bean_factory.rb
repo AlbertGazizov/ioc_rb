@@ -12,11 +12,11 @@ class IocRb::BeanFactory
     @request_scope          = IocRb::Scopes::RequestScope.new(self)
   end
 
-  # Get bean
-  # according to the bean scope it will be newly created or returned already
-  # instantiated bean
+  # Get bean from the container by it's +name+.
+  # According to the bean scope it will be newly created or returned already instantiated bean
   # @param [Symbol] bean name
   # @return bean instance
+  # @raise MissingBeanError if bean with the specified name is not found
   def get_bean(name)
     bean_metadata = @beans_metadata_storage.by_name(name)
     unless bean_metadata
@@ -25,6 +25,9 @@ class IocRb::BeanFactory
     get_bean_with_metadata(bean_metadata)
   end
 
+  # Get bean by the specified +bean metadata+
+  # @param [BeanMetadata] bean metadata
+  # @return bean instance
   def get_bean_with_metadata(bean_metadata)
     case bean_metadata.scope
     when :singleton
@@ -38,6 +41,11 @@ class IocRb::BeanFactory
     end
   end
 
+  # Create new bean instance according
+  # to the specified +bean_metadata+
+  # @param [BeanMetadata] bean metadata
+  # @return bean instance
+  # @raise MissingBeanError if some of bean dependencies are not found
   def create_bean(bean_metadata)
     bean = bean_metadata.bean_class.new
     bean_metadata.attrs.each do |attr|
