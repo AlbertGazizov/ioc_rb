@@ -9,8 +9,8 @@ class IocRb::BeanMetadata
     @scope      = options[:scope] || :singleton
     @attrs      = []
 
-    if @bean_class.respond_to?(:injectable_attrs)
-      @bean_class.injectable_attrs.each do |attr, options|
+    if @bean_class.respond_to?(:_iocrb_injectable_attrs)
+      @bean_class._iocrb_injectable_attrs.each do |attr, options|
         options[:ref] ||= attr
         @attrs << Attribute.new(attr, options)
       end
