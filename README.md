@@ -1,6 +1,6 @@
 # IocRb
 
-IocRb is a Inversion of Control container for Ruby.
+IocRb is an Inversion of Control container for Ruby.
 It takes advantage of the dynamic nature of Ruby to provide a rich and flexible approach to injecting dependencies.
 It's inspired by SpringIoc and tries to give you the same features.
 
@@ -90,3 +90,4 @@ Or install it yourself as:
 1. Add documentation for methods
 2. CI
 3. Constructor based injection
+4. Scope registration, refactor BeanFactory. IocRb:Container.register_scope(SomeScope)
