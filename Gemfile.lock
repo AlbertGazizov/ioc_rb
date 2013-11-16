@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     ioc_rb (0.0.1)
+      request_store
 
 GEM
   remote: https://rubygems.org/
@@ -25,6 +26,7 @@ GEM
     minitest (4.7.5)
     multi_json (1.8.2)
     rake (10.1.0)
+    request_store (1.0.5)
     rspec (2.14.1)
       rspec-core (~> 2.14.0)
       rspec-expectations (~> 2.14.0)

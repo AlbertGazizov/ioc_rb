@@ -1,11 +1,12 @@
-class IocRb::BeanDefinition
-  attr_reader :name, :bean_class, :attrs
+class IocRb::BeanMetadata
+  attr_reader :name, :bean_class, :scope, :attrs
 
   def initialize(name, options, &block)
     IocRb::ArgsValidator.has_key!(options, :class)
 
     @name       = name
     @bean_class = options[:class]
+    @scope      = options[:scope] || :singleton
     @attrs      = []
 
     if @bean_class.respond_to?(:injectable_attrs)

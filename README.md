@@ -87,5 +87,4 @@ Or install it yourself as:
 5. Create new Pull Request
 
 # TODO
-1. fix passing multiple names to inject
-2. implement scopes
+1 fix passing multiple names to inject

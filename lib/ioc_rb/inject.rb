@@ -5,6 +5,8 @@
 #
 # class Foo
 #   inject :bar
+#   or:
+#   inject :some_bar, ref: bar
 # end
 #
 # ioc_container[:foo].bar == ioc_container[:bar]
@@ -12,27 +14,17 @@ class Object
 
   class << self
 
-    def inject(*args)
-      options = args.last.is_a?(Hash) ? options = args.delete_at(-1) : {}
-      bean_names = args
-
-      unless bean_names.all?{|name| name.is_a?(Symbol) }
-        raise ArgumentError, "inject accepts only symbols"
+    def inject(dependency_name, options = {})
+      unless dependency_name.is_a?(Symbol)
+        raise ArgumentError, "dependency name should be a symbol"
       end
       unless respond_to?(:injectable_attrs)
         class_attribute :injectable_attrs
-        self.injectable_attrs = bean_names.inject({}) do |result, name|
-          result[name] = options.dup
-          result
-        end
+        self.injectable_attrs = { dependency_name => options.dup }
       else
-        new_attrs = bean_names.inject({}) do |result, name|
-          result[name] = options
-          result
-        end
-        self.injectable_attrs = self.injectable_attrs.merge(new_attrs)
+        self.injectable_attrs = self.injectable_attrs.merge(dependency_name => options.dup)
       end
-      class_attribute *bean_names
+      attr_accessor dependency_name
     end
 
   end

@@ -60,13 +60,15 @@ describe IocRb::Container do
       end
       class ContactValidator
       end
+      class ContactBuilder
+      end
     end
 
     let(:container) do
       IocRb::Container.new do |c|
         c.bean(:contacts_repository, class: Test::ContactsRepository)
-        c.bean(:contact_validator, class: Test::ContactValidator)
-        c.bean(:contact_book, class: Test::ContactBook)
+        c.bean(:contact_validator,   class: Test::ContactValidator)
+        c.bean(:contact_book,        class: Test::ContactBook)
       end
     end
 
@@ -117,19 +119,34 @@ describe IocRb::Container do
     module Test
       class ContactsService
         inject :contacts_repository
+        inject :contacts_validator
       end
       class ContactsRepository
+      end
+      class ContactsValidator
       end
     end
     let(:container) do
       container = IocRb::Container.new
       container.bean(:contacts_repository, class: Test::ContactsRepository, scope: :request)
-      container.bean(:contacts_service,    class: Test::ContactsService, scope: :singleton)
+      container.bean(:contacts_service,    class: Test::ContactsService,    scope: :singleton)
+      container.bean(:contacts_validator,  class: Test::ContactsValidator,  scope: :prototype)
       container
     end
 
     it "should instanciate bean with :request scope on each request" do
-      container[:contacts_service]
+      first_repo  = container[:contacts_service].contacts_repository
+      second_repo = container[:contacts_service].contacts_repository
+      first_repo.should == second_repo
+      RequestStore.clear! # new request
+      third_repo  = container[:contacts_service].contacts_repository
+      first_repo.should_not == third_repo
+    end
+
+    it "should instanciate bean with :prototype scope on each call" do
+      first_validator  = container[:contacts_service].contacts_validator
+      second_validator = container[:contacts_service].contacts_validator
+      first_validator.should_not == second_validator
     end
   end
 end
