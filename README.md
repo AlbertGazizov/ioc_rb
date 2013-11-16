@@ -87,4 +87,5 @@ Or install it yourself as:
 5. Create new Pull Request
 
 # TODO
-1 fix passing multiple names to inject
+1. Add documentation for methods
+2. CI
