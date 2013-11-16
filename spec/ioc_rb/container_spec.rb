@@ -3,27 +3,24 @@ require 'ioc_rb'
 
 describe IocRb::Container do
 
-  module Test
-    class Logger
-      attr_accessor :appender
-    end
-
-    class Appender
-    end
+  class Logger
+    attr_accessor :appender
+  end
+  class Appender
   end
 
   describe "bean definitions" do
     let(:container) do
       container = IocRb::Container.new
-      container.bean(:appender, class: Test::Appender)
-      container.bean(:logger, class: Test::Logger) do
+      container.bean(:appender, class: Appender)
+      container.bean(:logger, class: Logger) do
         attr :appender, ref: :appender
       end
       container
     end
     it "should instanciate bean and it's dependencies" do
-      container[:logger].should be_a(Test::Logger)
-      container[:logger].appender.should be_a(Test::Appender)
+      container[:logger].should be_a(Logger)
+      container[:logger].appender.should be_a(Appender)
     end
 
     it "container should return the same instance on each call" do
@@ -35,8 +32,8 @@ describe IocRb::Container do
   describe "passing bean definitions to container constructor" do
     let(:resource) do
       Proc.new do |c|
-        c.bean(:appender, class: Test::Appender)
-        c.bean(:logger, class: Test::Logger) do
+        c.bean(:appender, class: Appender)
+        c.bean(:logger, class: Logger) do
           attr :appender, ref: :appender
         end
       end
@@ -44,93 +41,61 @@ describe IocRb::Container do
 
     it "should instanciate given bean definitions" do
       container = IocRb::Container.new([resource])
-      container[:logger].should be_a(Test::Logger)
-      container[:appender].should be_a(Test::Appender)
-    end
-  end
-
-  describe "autowiring using :inject keyword" do
-    module Test
-      class ContactBook
-        inject :contacts_repository
-        inject :validator, ref: :contact_validator
-      end
-
-      class ContactsRepository
-      end
-      class ContactValidator
-      end
-      class ContactBuilder
-      end
-    end
-
-    let(:container) do
-      IocRb::Container.new do |c|
-        c.bean(:contacts_repository, class: Test::ContactsRepository)
-        c.bean(:contact_validator,   class: Test::ContactValidator)
-        c.bean(:contact_book,        class: Test::ContactBook)
-      end
-    end
-
-    it "should autowire dependencies" do
-      container[:contact_book].contacts_repository.should be_a(Test::ContactsRepository)
-      container[:contact_book].validator.should be_a(Test::ContactValidator)
+      container[:logger].should be_a(Logger)
+      container[:appender].should be_a(Appender)
     end
   end
 
   describe "inheritance" do
-    module Test
-      class Form
-        inject :validator
-      end
+    class Form
+      inject :validator
+    end
 
-      class Circle < Form
-        inject :circle_validator
-      end
-      class Rectangle < Form
-        inject :rectangle_validator
-      end
+    class Circle < Form
+      inject :circle_validator
+    end
+    class Rectangle < Form
+      inject :rectangle_validator
+    end
 
-      class Validator
-      end
-      class CircleValidator
-      end
-      class RectangleValidator
-      end
+    class Validator
+    end
+    class CircleValidator
+    end
+    class RectangleValidator
     end
 
     let(:container) do
       IocRb::Container.new do |c|
-        c.bean(:circle,              class: Test::Circle)
-        c.bean(:rectangle,           class: Test::Rectangle)
-        c.bean(:validator,           class: Test::Validator)
-        c.bean(:circle_validator,    class: Test::CircleValidator)
-        c.bean(:rectangle_validator, class: Test::RectangleValidator)
+        c.bean(:circle,              class: Circle)
+        c.bean(:rectangle,           class: Rectangle)
+        c.bean(:validator,           class: Validator)
+        c.bean(:circle_validator,    class: CircleValidator)
+        c.bean(:rectangle_validator, class: RectangleValidator)
       end
     end
 
     it "dependencies in subclasses shouldn't affect on each other" do
-      container[:circle].circle_validator.should       be_a(Test::CircleValidator)
-      container[:rectangle].rectangle_validator.should be_a(Test::RectangleValidator)
+      container[:circle].circle_validator.should       be_a(CircleValidator)
+      container[:rectangle].rectangle_validator.should be_a(RectangleValidator)
     end
   end
 
   describe "bean scopes" do
-    module Test
-      class ContactsService
-        inject :contacts_repository
-        inject :contacts_validator
-      end
-      class ContactsRepository
-      end
-      class ContactsValidator
-      end
+    class ContactsService
+      inject :contacts_repository
+      inject :contacts_validator
     end
+    class ContactsRepository
+    end
+    class ContactsValidator
+    end
+
     let(:container) do
       container = IocRb::Container.new
-      container.bean(:contacts_repository, class: Test::ContactsRepository, scope: :request)
-      container.bean(:contacts_service,    class: Test::ContactsService,    scope: :singleton)
-      container.bean(:contacts_validator,  class: Test::ContactsValidator,  scope: :prototype)
+      container.bean(:contacts_repository, class: ContactsRepository, scope: :request)
+      container.bean(:contacts_service,    class: ContactsService,    scope: :singleton)
+      container.bean(:contacts_validator,  class: ContactsValidator,  scope: :prototype)
       container
     end
 

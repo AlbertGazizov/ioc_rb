@@ -12,7 +12,7 @@ class IocRb::BeanMetadata
     if @bean_class.respond_to?(:_iocrb_injectable_attrs)
       @bean_class._iocrb_injectable_attrs.each do |attr, options|
         options[:ref] ||= attr
-        @attrs << Attribute.new(attr, options)
+        @attrs << IocRb::BeanMetadata::Attribute.new(attr, options)
       end
     end
 
@@ -37,7 +37,7 @@ class IocRb::BeanMetadata
     end
 
     def attr(name, options)
-      @attrs << Attribute.new(name, options)
+      @attrs << IocRb::BeanMetadata::Attribute.new(name, options)
     end
   end
 end

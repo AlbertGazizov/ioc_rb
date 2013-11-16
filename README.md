@@ -89,3 +89,4 @@ Or install it yourself as:
 # TODO
 1. Add documentation for methods
 2. CI
+3. Constructor based injection

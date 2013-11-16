@@ -6,6 +6,7 @@ class IocRb::Scopes::RequestScope
   end
 
   def get_bean(bean_name)
-    RequestStore.store[bean_name] ||= @bean_factory.create_bean(bean_name)
+    RequestStore.store[:_iocrb_beans] ||= {}
+    RequestStore.store[:_iocrb_beans][bean_name] ||= @bean_factory.create_bean(bean_name)
   end
 end
