@@ -1,4 +1,4 @@
-# IocRb
+# IocRb [![Code Climate](https://codeclimate.com/github/AlbertGazizov/ioc_rb.png)](https://codeclimate.com/github/AlbertGazizov/ioc_rb)
 
 IocRb is an Inversion of Control container for Ruby.
 It takes advantage of the dynamic nature of Ruby to provide a rich and flexible approach to injecting dependencies.
