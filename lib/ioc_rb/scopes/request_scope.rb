@@ -1,12 +1,23 @@
 require 'request_store'
 
+# Request scope instantiates new bean instance
+# on each new HTTP request
 class IocRb::Scopes::RequestScope
+
+  # Constructon
+  # @param bean_factory bean factory
   def initialize(bean_factory)
     @bean_factory = bean_factory
   end
 
-  def get_bean(bean_name)
+  # Returns a bean from the +RequestStore+
+  # RequestStore is a wrapper for Thread.current
+  # which clears it on each new HTTP request
+  #
+  # @param bean_metadata [BeanMetadata] bean metadata
+  # @returns bean instance
+  def get_bean(bean_metadata)
     RequestStore.store[:_iocrb_beans] ||= {}
-    RequestStore.store[:_iocrb_beans][bean_name] ||= @bean_factory.create_bean(bean_name)
+    RequestStore.store[:_iocrb_beans][bean_metadata.name] ||= @bean_factory.create_bean(bean_metadata)
   end
 end

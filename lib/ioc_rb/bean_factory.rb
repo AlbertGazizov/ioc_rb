@@ -3,8 +3,11 @@ require 'ioc_rb/scopes/singleton_scope'
 require 'ioc_rb/scopes/prototype_scope'
 require 'ioc_rb/scopes/request_scope'
 
+# Instantiates beans according to their scopes
 class IocRb::BeanFactory
 
+  # Constructor
+  # @param beans_metadata_storage storage of bean metadatas
   def initialize(beans_metadata_storage)
     @beans_metadata_storage = beans_metadata_storage
     @singleton_scope        = IocRb::Scopes::SingletonScope.new(self)

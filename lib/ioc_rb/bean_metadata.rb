@@ -1,6 +1,19 @@
+# Stores bean specific data: bean class, name,
+# scope and bean dependencies
 class IocRb::BeanMetadata
   attr_reader :name, :bean_class, :scope, :attrs
 
+  # Constructor
+  # @param name [Symbol] bean name
+  # @params options [Hash] includes bean class and scope
+  # @params &block [Proc] bean dependencies, has the following structure:
+  #   do |c|
+  #     attr :some_dependency, ref: :dependency_name
+  #     arg  :another_dependency, ref: :another_dependency_name
+  #   end
+  # here attr means setter injection, arg means constructon injects
+  # +some_dependency+ is an attr_accessor defined in the bean class,
+  # +ref+ specifies what dependency from container to use to set the attribute
   def initialize(name, options, &block)
     IocRb::ArgsValidator.has_key!(options, :class)
 
@@ -38,6 +51,10 @@ class IocRb::BeanMetadata
 
     def attr(name, options)
       @attrs << IocRb::BeanMetadata::Attribute.new(name, options)
+    end
+
+    def arg(name, options)
+      @args << IocRb::BeanMetadata::Attribute.new(name, options)
     end
   end
 end
