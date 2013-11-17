@@ -7,7 +7,7 @@ require 'ioc_rb/scopes/request_scope'
 class IocRb::BeanFactory
 
   # Constructor
-  # @param beans_metadata_storage storage of bean metadatas
+  # @param beans_metadata_storage [BeansMetadataStorage] storage of bean metadatas
   def initialize(beans_metadata_storage)
     @beans_metadata_storage = beans_metadata_storage
     @singleton_scope        = IocRb::Scopes::SingletonScope.new(self)
@@ -16,7 +16,8 @@ class IocRb::BeanFactory
   end
 
   # Get bean from the container by it's +name+.
-  # According to the bean scope it will be newly created or returned already instantiated bean
+  # According to the bean scope it will be newly created or returned already
+  # instantiated bean
   # @param [Symbol] bean name
   # @return bean instance
   # @raise MissingBeanError if bean with the specified name is not found

@@ -2,7 +2,7 @@
 module IocRb::ArgsValidator
   class << self
 
-    # Enscure that specifid +obj+ is a symbol
+    # Checks that specifid +obj+ is a symbol
     # @param obj some object
     # @param obj_name object's name, used to clarify error causer in exception
     def is_symbol!(obj, obj_name)
@@ -11,7 +11,7 @@ module IocRb::ArgsValidator
       end
     end
 
-    # Enscure that specifid +obj+ is an Array
+    # Checks that specifid +obj+ is an Array
     # @param obj some object
     # @param obj_name object's name, used to clarify error causer in exception
     def is_array!(obj, obj_name)
@@ -20,7 +20,7 @@ module IocRb::ArgsValidator
       end
     end
 
-    # Enscure that specifid +obj+ is a Hash
+    # Checks that specifid +obj+ is a Hash
     # @param obj some object
     # @param obj_name object's name, used to clarify error causer in exception
     def is_hash!(obj, obj_name)
@@ -29,7 +29,7 @@ module IocRb::ArgsValidator
       end
     end
 
-    # Enscure that specifid +hash+ has a specified +key+
+    # Checks that specifid +hash+ has a specified +key+
     # @param hash some hash
     # @param key hash's key
     def has_key!(hash, key)
@@ -38,7 +38,7 @@ module IocRb::ArgsValidator
       end
     end
 
-    # Enscure that specified +block+ is given
+    # Checks that specified +block+ is given
     # @param block some block
     def block_given!(block)
       unless block

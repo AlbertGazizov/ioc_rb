@@ -1,14 +1,19 @@
 # Storage of bean metadatas
 class IocRb::BeansMetadataStorage
   def initialize
-    @bean_definitions = {}
+    @bean_metadatas = {}
   end
 
+  # Finds bean metadata in storage by it's name
+  # @param name [Symbol] bean metadata name
+  # @return bean metadata
   def by_name(name)
-    @bean_definitions[name]
+    @bean_metadatas[name]
   end
 
-  def put(bean_definition)
-    @bean_definitions[bean_definition.name] = bean_definition
+  # Saves a given +bean_metadata+ to the storage
+  # @param bean_metadata [BeanMetadata] bean metadata for saving
+  def put(bean_metadata)
+    @bean_metadatas[bean_metadata.name] = bean_metadata
   end
 end
