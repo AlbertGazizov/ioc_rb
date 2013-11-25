@@ -18,6 +18,9 @@ class Object
       unless dependency_name.is_a?(Symbol)
         raise ArgumentError, "dependency name should be a symbol"
       end
+      unless options.is_a?(Hash)
+        raise ArgumentError, "second argument for inject method should be a Hash"
+      end
       unless respond_to?(:_iocrb_injectable_attrs)
         class_attribute :_iocrb_injectable_attrs
         self._iocrb_injectable_attrs = { dependency_name => options.dup }
