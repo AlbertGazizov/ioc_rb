@@ -24,7 +24,7 @@ class IocRb::BeanFactory
   def get_bean(name)
     bean_metadata = @beans_metadata_storage.by_name(name)
     unless bean_metadata
-      raise Errors::MissingBeanError, "Bean with name :#{name} is not defined"
+      raise IocRb::Errors::MissingBeanError, "Bean with name :#{name} is not defined"
     end
     get_bean_with_metadata(bean_metadata)
   end
@@ -41,7 +41,7 @@ class IocRb::BeanFactory
     when :request
       @request_scope.get_bean(bean_metadata)
     else
-      raise Errors::UnsupportedScopeError, "Bean with name :#{bean_metadata.name} has unsupported scope :#{bean_metadata.scope}"
+      raise IocRb::Errors::UnsupportedScopeError, "Bean with name :#{bean_metadata.name} has unsupported scope :#{bean_metadata.scope}"
     end
   end
 
@@ -55,7 +55,7 @@ class IocRb::BeanFactory
     bean_metadata.attrs.each do |attr|
       bean_metadata = @beans_metadata_storage.by_name(attr.ref)
       unless bean_metadata
-        raise Errors::MissingBeanError, "Bean with name :#{attr.ref} is not defined"
+        raise IocRb::Errors::MissingBeanError, "Bean with name :#{attr.ref} is not defined"
       end
       case bean_metadata.scope
       when :singleton
@@ -63,12 +63,12 @@ class IocRb::BeanFactory
       when :prototype
         bean.instance_variable_set(:@_ioc_rb_bean_factory, self)
         bean.define_singleton_method(attr.name) do
-          @_ioc_rb_bean_factory.get_bean(attr.name)
+          @_ioc_rb_bean_factory.get_bean(attr.ref)
         end
       when :request
         bean.instance_variable_set(:@_ioc_rb_bean_factory, self)
         bean.define_singleton_method(attr.name) do
-          @_ioc_rb_bean_factory.get_bean(attr.name)
+          @_ioc_rb_bean_factory.get_bean(attr.ref)
         end
       end
     end
