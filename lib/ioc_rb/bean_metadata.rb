@@ -1,7 +1,7 @@
 # Stores bean specific data: bean class, name,
 # scope and bean dependencies
 class IocRb::BeanMetadata
-  attr_reader :name, :bean_class, :scope, :attrs
+  attr_reader :name, :bean_class, :scope, :instance, :attrs
 
   # Constructor
   # @param name [Symbol] bean name
@@ -20,6 +20,7 @@ class IocRb::BeanMetadata
     @name       = name
     @bean_class = options[:class]
     @scope      = options[:scope] || :singleton
+    @instance   = options[:instance].nil? ? true : options[:instance]
     @attrs      = []
 
     if @bean_class.respond_to?(:_iocrb_injectable_attrs)

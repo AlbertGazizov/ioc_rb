@@ -51,7 +51,8 @@ class IocRb::BeanFactory
   # @return bean instance
   # @raise MissingBeanError if some of bean dependencies are not found
   def create_bean(bean_metadata)
-    bean = bean_metadata.bean_class.new
+    bean = bean_metadata.instance ? bean_metadata.bean_class.new : bean_metadata.bean_class
+
     bean_metadata.attrs.each do |attr|
       bean_metadata = @beans_metadata_storage.by_name(attr.ref)
       unless bean_metadata

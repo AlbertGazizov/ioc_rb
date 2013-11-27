@@ -8,6 +8,8 @@ describe IocRb::Container do
   end
   class Appender
   end
+  class Printer
+  end
 
   describe "bean definitions" do
     let(:container) do
@@ -16,11 +18,13 @@ describe IocRb::Container do
       container.bean(:logger, class: Logger) do
         attr :appender, ref: :appender
       end
+      container.bean(:printer, class: Printer, instance: false)
       container
     end
     it "should instanciate bean and it's dependencies" do
       container[:logger].should be_a(Logger)
       container[:logger].appender.should be_a(Appender)
+      container[:printer].should be(Printer)
     end
 
     it "container should return the same instance on each call" do

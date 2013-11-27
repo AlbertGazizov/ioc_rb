@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     ioc_rb (0.0.2)
+      activesupport
       request_store
 
 GEM
@@ -43,7 +44,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activesupport
   bundler (~> 1.3)
   debugger
   ioc_rb!
