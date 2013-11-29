@@ -46,6 +46,7 @@ module IocRb
     # @param name [Symbol] bean name
     # @return bean instance
     def [](name)
+      IocRb::ArgsValidator.is_symbol!(name, :bean_name)
       @bean_factory.get_bean(name)
     end
 
