@@ -14,6 +14,10 @@ class IocRb::Scopes::SingletonScope
   # @param bean_metadata [BeanMetadata] bean metadata
   # @returns bean instance
   def get_bean(bean_metadata)
-    @beans[bean_metadata.name] ||= @bean_factory.create_bean(bean_metadata)
+    if bean = @beans[bean_metadata.name]
+      bean
+    else
+      @bean_factory.create_bean_and_save(bean_metadata, @beans)
+    end
   end
 end

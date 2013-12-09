@@ -18,6 +18,10 @@ class IocRb::Scopes::RequestScope
   # @returns bean instance
   def get_bean(bean_metadata)
     RequestStore.store[:_iocrb_beans] ||= {}
-    RequestStore.store[:_iocrb_beans][bean_metadata.name] ||= @bean_factory.create_bean(bean_metadata)
+    if bean = RequestStore.store[:_iocrb_beans][bean_metadata.name]
+      bean
+    else
+     @bean_factory.create_bean_and_save(bean_metadata, RequestStore.store[:_iocrb_beans])
+    end
   end
 end

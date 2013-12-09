@@ -12,6 +12,6 @@ class IocRb::Scopes::PrototypeScope
   # @param bean_metadata [BeanMetadata] bean metadata
   # @returns bean instance
   def get_bean(bean_metadata)
-    @bean_factory.create_bean(bean_metadata)
+    @bean_factory.create_bean_and_save(bean_metadata, {})
   end
 end
