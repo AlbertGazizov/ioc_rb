@@ -51,7 +51,14 @@ class IocRb::BeanFactory
   # @return bean instance
   # @raise MissingBeanError if some of bean dependencies are not found
   def create_bean_and_save(bean_metadata, beans_storage)
-    bean = bean_metadata.instance ? bean_metadata.bean_class.new : bean_metadata.bean_class
+    if bean_metadata.bean_class.is_a?(Class)
+      bean_class = bean_metadata.bean_class
+    else
+      bean_class = bean_metadata.bean_class.split('::').inject(Object) do |mod, class_name|
+        mod.const_get(class_name)
+      end
+    end
+    bean = bean_metadata.instance ? bean_class.new : bean_class
 
     # put to container first to prevent circular dependencies
     beans_storage[bean_metadata.name] = bean

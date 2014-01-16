@@ -36,7 +36,7 @@ describe IocRb::Container do
   describe "passing bean definitions to container constructor" do
     let(:resource) do
       Proc.new do |c|
-        c.bean(:appender, class: Appender)
+        c.bean(:appender, class: 'Appender')
         c.bean(:logger, class: Logger) do
           attr :appender, ref: :appender
         end
@@ -48,6 +48,7 @@ describe IocRb::Container do
       container[:logger].should be_a(Logger)
       container[:appender].should be_a(Appender)
     end
+
   end
 
   describe "inheritance" do
