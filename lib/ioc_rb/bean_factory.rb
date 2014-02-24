@@ -61,8 +61,8 @@ class IocRb::BeanFactory
     bean = bean_metadata.instance ? bean_class.new : bean_class
 
     if bean_metadata.has_factory_method?
-      bean = bean.send(bean_metadata.factory_method)
       set_bean_dependencies(bean, bean_metadata)
+      bean = bean.send(bean_metadata.factory_method)
       beans_storage[bean_metadata.name] = bean
     else
       # put to container first to prevent circular dependencies
