@@ -119,4 +119,28 @@ describe IocRb::Container do
       first_validator.should_not == second_validator
     end
   end
+
+  describe "factory method" do
+    module Test
+      class Config
+      end
+      class ConfigsFactory
+        def load_config
+          Config.new
+        end
+      end
+    end
+
+    let(:container) do
+      IocRb::Container.new do |c|
+        c.bean :config, class: Test::ConfigsFactory, factory_method: :load_config
+      end
+    end
+
+    it "should instantiate bean using factory method" do
+      container[:config].should be_instance_of(Test::Config)
+    end
+
+  end
+
 end

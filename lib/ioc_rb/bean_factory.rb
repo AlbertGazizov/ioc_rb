@@ -60,9 +60,22 @@ class IocRb::BeanFactory
     end
     bean = bean_metadata.instance ? bean_class.new : bean_class
 
-    # put to container first to prevent circular dependencies
-    beans_storage[bean_metadata.name] = bean
+    if bean_metadata.has_factory_method?
+      bean = bean.send(bean_metadata.factory_method)
+      set_bean_dependencies(bean, bean_metadata)
+      beans_storage[bean_metadata.name] = bean
+    else
+      # put to container first to prevent circular dependencies
+      beans_storage[bean_metadata.name] = bean
+      set_bean_dependencies(bean, bean_metadata)
+    end
 
+    bean
+  end
+
+  private
+
+  def set_bean_dependencies(bean, bean_metadata)
     bean_metadata.attrs.each do |attr|
       bean_metadata = @beans_metadata_storage.by_name(attr.ref)
       unless bean_metadata
@@ -83,7 +96,6 @@ class IocRb::BeanFactory
         end
       end
     end
-    bean
   end
 
 end

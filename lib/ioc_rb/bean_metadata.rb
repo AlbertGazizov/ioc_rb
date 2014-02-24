@@ -1,7 +1,7 @@
 # Stores bean specific data: bean class, name,
 # scope and bean dependencies
 class IocRb::BeanMetadata
-  attr_reader :name, :bean_class, :scope, :instance, :attrs
+  attr_reader :name, :bean_class, :scope, :instance, :factory_method, :attrs
 
   # Constructor
   # @param name [Symbol] bean name
@@ -17,11 +17,12 @@ class IocRb::BeanMetadata
   def initialize(name, options, &block)
     IocRb::ArgsValidator.has_key!(options, :class)
 
-    @name       = name
-    @bean_class = options[:class]
-    @scope      = options[:scope] || :singleton
-    @instance   = options[:instance].nil? ? true : options[:instance]
-    @attrs      = []
+    @name           = name
+    @bean_class     = options[:class]
+    @scope          = options[:scope] || :singleton
+    @instance       = options[:instance].nil? ? true : options[:instance]
+    @factory_method = options[:factory_method]
+    @attrs          = []
 
     if @bean_class.respond_to?(:_iocrb_injectable_attrs)
       @bean_class._iocrb_injectable_attrs.each do |attr, options|
@@ -33,6 +34,10 @@ class IocRb::BeanMetadata
     if block
       Dsl.new(@attrs).instance_exec(&block)
     end
+  end
+
+  def has_factory_method?
+    !!@factory_method
   end
 
   class Attribute
