@@ -57,9 +57,9 @@ class IocRb::BeanFactory
       bean_class = bean_metadata.bean_class.split('::').inject(Object) do |mod, class_name|
         mod.const_get(class_name)
       end
+      bean_metadata.fetch_attrs!(bean_class)
     end
     bean = bean_metadata.instance ? bean_class.new : bean_class
-
     if bean_metadata.has_factory_method?
       set_bean_dependencies(bean, bean_metadata)
       bean = bean.send(bean_metadata.factory_method)
