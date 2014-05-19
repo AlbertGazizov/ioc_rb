@@ -7,6 +7,10 @@ describe "Object.inject" do
     inject :contacts_repository
     inject :validator, ref: :contact_validator
   end
+  class ContactBookService
+    inject :contacts_repository
+    inject :validator, ref: :contact_validator
+  end
   class ContactsRepository
   end
   class ContactValidator
@@ -14,15 +18,21 @@ describe "Object.inject" do
 
   let(:container) do
     IocRb::Container.new do |c|
-      c.bean(:contacts_repository, class: ContactsRepository)
-      c.bean(:contact_validator,   class: ContactValidator)
-      c.bean(:contact_book,        class: ContactBook)
+      c.bean(:contacts_repository,  class: ContactsRepository)
+      c.bean(:contact_validator,    class: ContactValidator)
+      c.bean(:contact_book,         class: ContactBook)
+      c.bean(:contact_book_service, class: "ContactBookService")
     end
   end
 
   it "should autowire dependencies" do
     container[:contact_book].contacts_repository.should be_a(ContactsRepository)
     container[:contact_book].validator.should be_a(ContactValidator)
+  end
+
+  it "should lazy autowire dependencies for string class names" do
+    container[:contact_book_service].contacts_repository.should be_a(ContactsRepository)
+    container[:contact_book_service].validator.should be_a(ContactValidator)
   end
 
   it "should raise ArgumentError if non-symbol passed as dependency name" do
