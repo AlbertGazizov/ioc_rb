@@ -24,15 +24,19 @@ class IocRb::BeanMetadata
     @factory_method = options[:factory_method]
     @attrs          = []
 
-    if @bean_class.respond_to?(:_iocrb_injectable_attrs)
-      @bean_class._iocrb_injectable_attrs.each do |attr, options|
-        options[:ref] ||= attr
-        @attrs << IocRb::BeanMetadata::Attribute.new(attr, options)
-      end
-    end
+    fetch_attrs!(@bean_class)
 
     if block
       Dsl.new(@attrs).instance_exec(&block)
+    end
+  end
+
+  def fetch_attrs!(klass)
+    if klass.respond_to?(:_iocrb_injectable_attrs)
+      klass._iocrb_injectable_attrs.each do |attr, options|
+        options[:ref] ||= attr
+        @attrs << IocRb::BeanMetadata::Attribute.new(attr, options)
+      end
     end
   end
 
