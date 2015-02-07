@@ -6,8 +6,8 @@ require 'ioc_rb/version'
 Gem::Specification.new do |spec|
   spec.name          = "ioc_rb"
   spec.version       = IocRb::VERSION
-  spec.authors       = ["Albert Gazizov", "Ruslan Gatiyatov"]
-  spec.email         = ["deeper4k@gmail.com", "ruslan.gatiyatov@gmail.com"]
+  spec.authors       = ["Albert Gazizov"]
+  spec.email         = ["deeper4k@gmail.com"]
   spec.description   = %q{Inversion of Controll Container}
   spec.summary       = %q{Inversion of Controll Container}
   spec.homepage      = "http://github.com/deeper4k/ioc_rb"
