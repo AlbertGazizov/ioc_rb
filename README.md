@@ -92,3 +92,6 @@ Or install it yourself as:
 1. Constructor based injection
 2. Scope registration, refactor BeanFactory. IocRb:Container.register_scope(SomeScope)
 3. Write documentation with more examples
+
+## Author
+Albert Gazizov, [@deeper4k](https://twitter.com/deeper4k)
