@@ -79,7 +79,7 @@ class IocRb::BeanFactory
     bean_metadata.attrs.each do |attr|
       bean_metadata = @beans_metadata_storage.by_name(attr.ref)
       unless bean_metadata
-        raise IocRb::Errors::MissingBeanError, "Bean with name :#{attr.ref} is not defined"
+        raise IocRb::Errors::MissingBeanError, "Bean with name :#{attr.ref} is not defined, check #{bean.class}"
       end
       case bean_metadata.scope
       when :singleton

@@ -5,5 +5,4 @@ gemspec
 
 group :test do
   gem 'rspec'
-  gem 'debugger'
 end
