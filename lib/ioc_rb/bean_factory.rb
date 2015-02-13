@@ -5,10 +5,12 @@ require 'ioc_rb/scopes/request_scope'
 
 # Instantiates beans according to their scopes
 class IocRb::BeanFactory
+  attr_reader :const_loader
 
   # Constructor
   # @param beans_metadata_storage [BeansMetadataStorage] storage of bean metadatas
-  def initialize(beans_metadata_storage)
+  def initialize(const_loader, beans_metadata_storage)
+    @const_loader           = const_loader
     @beans_metadata_storage = beans_metadata_storage
     @singleton_scope        = IocRb::Scopes::SingletonScope.new(self)
     @prototype_scope        = IocRb::Scopes::PrototypeScope.new(self)
@@ -54,9 +56,7 @@ class IocRb::BeanFactory
     if bean_metadata.bean_class.is_a?(Class)
       bean_class = bean_metadata.bean_class
     else
-      bean_class = bean_metadata.bean_class.split('::').inject(Object) do |mod, class_name|
-        mod.const_get(class_name)
-      end
+      bean_class = const_loader.load_const(bean_metadata.bean_class)
       bean_metadata.fetch_attrs!(bean_class)
     end
     bean = bean_metadata.instance ? bean_class.new : bean_class

@@ -3,6 +3,7 @@ require 'ioc_rb/args_validator'
 require 'ioc_rb/bean_metadata'
 require 'ioc_rb/beans_metadata_storage'
 require 'ioc_rb/bean_factory'
+require 'ioc_rb/const_loaders/native'
 
 module IocRb
 
@@ -11,20 +12,28 @@ module IocRb
   # providing a name and a class to create the object(we call them beans). Beans
   # may be retrieved by asking for them by name (via the [] operator)
   class Container
+    DEFAULT_CONST_LOADER = IocRb::ConstLoaders::Native
 
     # Constructor
     # @param resources [Array] array of procs with container's beans definitions
     # @param &block [Proc] optional proc with container's beans definitions
-    def initialize(resources = nil, &block)
+    def initialize(const_loader = DEFAULT_CONST_LOADER, &block)
       @beans_metadata_storage = IocRb::BeansMetadataStorage.new
-      @bean_factory = IocRb::BeanFactory.new(@beans_metadata_storage)
+      @bean_factory           = IocRb::BeanFactory.new(const_loader, @beans_metadata_storage)
 
-      if resources
-        IocRb::ArgsValidator.is_array!(resources, :resources)
-        load_bean_definitions(resources)
-      end
-      if block_given?
-        load_bean_definitions([block])
+      block.call(self) if block_given?
+    end
+
+    # Evaluates the given array of blocks on the container instance
+    # what adds new bean definitions to the container
+    # @param resources [Array] array of procs with container's beans definitions
+    def self.new_with_beans(resources, const_loader = DEFAULT_CONST_LOADER)
+      IocRb::ArgsValidator.is_array!(resources, :resources)
+
+      self.new(const_loader).tap do |container|
+        resources.each do |resource|
+          resource.call(container)
+        end
       end
     end
 
@@ -48,17 +57,6 @@ module IocRb
     def [](name)
       IocRb::ArgsValidator.is_symbol!(name, :bean_name)
       @bean_factory.get_bean(name)
-    end
-
-    private
-
-    # Evaluates the given array of blocks on the container instance
-    # what adds new bean definitions to the container
-    # @param resources [Array] array of procs with container's beans definitions
-    def load_bean_definitions(resources)
-      resources.each do |resource|
-        resource.call(self)
-      end
     end
 
   end

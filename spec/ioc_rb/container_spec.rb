@@ -44,7 +44,7 @@ describe IocRb::Container do
     end
 
     it "should instanciate given bean definitions" do
-      container = IocRb::Container.new([resource])
+      container = IocRb::Container.new_with_beans([resource])
       container[:logger].should be_a(Logger)
       container[:appender].should be_a(Appender)
     end
