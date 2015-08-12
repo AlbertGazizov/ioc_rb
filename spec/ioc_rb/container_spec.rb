@@ -33,6 +33,17 @@ describe IocRb::Container do
     end
   end
 
+  describe "#replace_bean" do
+    it "should replace bean definition" do
+      container = IocRb::Container.new
+      container.bean(:appender, class: Appender)
+      container[:appender].should be_a(Appender)
+
+      container.replace_bean(:appender, class: Logger)
+      container[:appender].should be_a(Logger)
+    end
+  end
+
   describe "passing bean definitions to container constructor" do
     let(:resource) do
       Proc.new do |c|

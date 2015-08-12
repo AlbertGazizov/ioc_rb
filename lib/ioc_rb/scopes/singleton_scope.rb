@@ -20,4 +20,10 @@ class IocRb::Scopes::SingletonScope
       @bean_factory.create_bean_and_save(bean_metadata, @beans)
     end
   end
+
+  # Delete bean from scope
+  # @param bean_metadata [BeanMetadata] bean metadata
+  def delete_bean(bean_metadata)
+    @beans.delete(bean_metadata.name)
+  end
 end

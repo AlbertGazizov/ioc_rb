@@ -14,4 +14,12 @@ class IocRb::Scopes::PrototypeScope
   def get_bean(bean_metadata)
     @bean_factory.create_bean_and_save(bean_metadata, {})
   end
+
+  # Delete bean from scope,
+  # because Prototype scope doesn't store bean
+  # then do nothing here
+  #
+  # @param bean_metadata [BeanMetadata] bean metadata
+  def delete_bean(bean_metadata)
+  end
 end

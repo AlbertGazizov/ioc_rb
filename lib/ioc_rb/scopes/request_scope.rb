@@ -24,4 +24,10 @@ class IocRb::Scopes::RequestScope
      @bean_factory.create_bean_and_save(bean_metadata, RequestStore.store[:_iocrb_beans])
     end
   end
+
+  # Delete bean from scope
+  # @param bean_metadata [BeanMetadata] bean metadata
+  def delete_bean(bean_metadata)
+    RequestStore.store[:_iocrb_beans].delete(bean_metadata.name)
+  end
 end

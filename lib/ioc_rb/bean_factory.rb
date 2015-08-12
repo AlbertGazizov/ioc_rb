@@ -35,16 +35,7 @@ class IocRb::BeanFactory
   # @param [BeanMetadata] bean metadata
   # @return bean instance
   def get_bean_with_metadata(bean_metadata)
-    case bean_metadata.scope
-    when :singleton
-      @singleton_scope.get_bean(bean_metadata)
-    when :prototype
-      @prototype_scope.get_bean(bean_metadata)
-    when :request
-      @request_scope.get_bean(bean_metadata)
-    else
-      raise IocRb::Errors::UnsupportedScopeError, "Bean with name :#{bean_metadata.name} has unsupported scope :#{bean_metadata.scope}"
-    end
+    get_scope_by_metadata(bean_metadata).get_bean(bean_metadata)
   end
 
   # Create new bean instance according
@@ -73,6 +64,17 @@ class IocRb::BeanFactory
     bean
   end
 
+  # Delete bean from the container by it's +name+.
+  # @param [Symbol] bean name
+  # @raise MissingBeanError if bean with the specified name is not found
+  def delete_bean(name)
+    bean_metadata = @beans_metadata_storage.by_name(name)
+    unless bean_metadata
+      raise IocRb::Errors::MissingBeanError, "Bean with name :#{name} is not defined"
+    end
+    get_scope_by_metadata(bean_metadata).delete_bean(bean_metadata)
+  end
+
   private
 
   def set_bean_dependencies(bean, bean_metadata)
@@ -95,6 +97,19 @@ class IocRb::BeanFactory
           @_ioc_rb_bean_factory.get_bean(attr.ref)
         end
       end
+    end
+  end
+
+  def get_scope_by_metadata(bean_metadata)
+    case bean_metadata.scope
+    when :singleton
+      @singleton_scope
+    when :prototype
+      @prototype_scope
+    when :request
+      @request_scope
+    else
+      raise IocRb::Errors::UnsupportedScopeError, "Bean with name :#{bean_metadata.name} has unsupported scope :#{bean_metadata.scope}"
     end
   end
 

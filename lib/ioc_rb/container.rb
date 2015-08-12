@@ -50,6 +50,19 @@ module IocRb
       @beans_metadata_storage.put(bean)
     end
 
+    # Registers new bean in container and replace existing instance if it's instantiated
+    # @param bean_name [Symbol] bean name
+    # @param options [Hash] includes bean class and bean scope
+    # @param &block [Proc] the block  which describes bean dependencies,
+    #                      see more in the BeanMetadata
+    def replace_bean(bean_name, options, &block)
+      bean(bean_name, options, &block)
+
+      if @bean_factory.get_bean(bean_name)
+        @bean_factory.delete_bean(bean_name)
+      end
+    end
+
     # Returns bean instance from the container
     # by the specified bean name
     # @param name [Symbol] bean name
