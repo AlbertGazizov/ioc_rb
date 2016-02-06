@@ -16,4 +16,8 @@ class IocRb::BeansMetadataStorage
   def put(bean_metadata)
     @bean_metadatas[bean_metadata.name] = bean_metadata
   end
+
+  def bean_classes
+    @bean_metadatas.values.map(&:bean_class)
+  end
 end

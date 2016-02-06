@@ -18,6 +18,7 @@ module IocRb
     # @param resources [Array] array of procs with container's beans definitions
     # @param &block [Proc] optional proc with container's beans definitions
     def initialize(const_loader = DEFAULT_CONST_LOADER, &block)
+      @const_loader           = const_loader
       @beans_metadata_storage = IocRb::BeansMetadataStorage.new
       @bean_factory           = IocRb::BeanFactory.new(const_loader, @beans_metadata_storage)
 
@@ -70,6 +71,17 @@ module IocRb
     def [](name)
       IocRb::ArgsValidator.is_symbol!(name, :bean_name)
       @bean_factory.get_bean(name)
+    end
+
+    # Load defined in bean classes
+    # this is needed for production usage
+    # for eager loading
+    def eager_load_bean_classes
+      @beans_metadata_storage.bean_classes.each do |bean_class|
+        if !bean_class.is_a?(Class)
+          @const_loader.load_const(bean_class)
+        end
+      end
     end
 
   end

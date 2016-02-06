@@ -33,6 +33,23 @@ describe IocRb::Container do
     end
   end
 
+  describe "eager_load_bean_classes" do
+    let(:container) do
+      container = IocRb::Container.new
+      container.bean(:appender, class: 'Appender')
+      container.bean(:logger, class: 'Logger') do
+        attr :appender, ref: :appender
+      end
+      container.bean(:printer, class: 'Printer', instance: false)
+      container
+    end
+
+    it "should eager load bean classes" do
+      container.eager_load_bean_classes
+    end
+  end
+
+
   describe "#replace_bean" do
     it "should replace bean definition" do
       container = IocRb::Container.new
